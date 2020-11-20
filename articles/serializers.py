@@ -6,7 +6,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Article
-        exclude = ['user',]
+        fields = "__all__"
+        # exclude = ['user','like_users']
 
 
 class CommentSerializer(serializers.ModelSerializer):
