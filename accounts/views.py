@@ -27,9 +27,12 @@ def signup(request):
 def user_detail_follow(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
     if request.method == 'GET':
+        if user_pk == 0:
+            person = request.user
         serializer = ProfileSerializer(person)
         return Response(serializer.data)
     else:
+        person = get_object_or_404(get_user_model(), pk=user_pk)
         if not request.user.is_authenticated:
             return Response({ 'error': '권한이 없습니다.' }, status=status.HTTP_401_UNAUTHORIZED)
         if request.user != person:
