@@ -9,15 +9,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .serializers import MovieSerializer
-from .models import Movie
+from .models import Movie, Genre
 
 
 @api_view(['GET', 'POST'])
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JSONWebTokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def movie_list_create(request):
     if request.method == 'GET':
         movies = Movie.objects.all()
+        genres = Genre.objects.all()
+        
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
     else:
