@@ -6,6 +6,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ProfileSerializer, UserSerializer
 
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
 
 @api_view(['POST'])
 def signup(request):
@@ -24,23 +28,21 @@ def signup(request):
 
 
 @api_view(['GET', 'POST'])
-def user_detail_follow(request, user_pk):
-    person = get_object_or_404(get_user_model(), pk=user_pk)
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def user_detail_follow(request, username):
+    person = get_object_or_404(get_user_model(), username=username)
     if request.method == 'GET':
-        if user_pk == 0:
-            person = request.user
         serializer = ProfileSerializer(person)
         return Response(serializer.data)
     else:
-        person = get_object_or_404(get_user_model(), pk=user_pk)
-        if not request.user.is_authenticated:
-            return Response({ 'error': '권한이 없습니다.' }, status=status.HTTP_401_UNAUTHORIZED)
-        if request.user != person:
-            if person.followers.filter(user_id=request.user.id).exists():
-                person.followers.remove(request.user)
+        user = get_object_or_404(get_user_model(), username=request.data['headers']['username'])
+        if user != person:
+            if person.followers.filter(pk=user.pk).exists():
+                person.followers.remove(user)
                 follow = False
             else:
-                person.followers.add(request.user)
+                person.followers.add(user)
                 follow = True
             return Response({ 'follow': follow, 'follow_cnt': person.followers.count() })
         else:
