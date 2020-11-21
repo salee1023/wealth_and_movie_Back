@@ -4,11 +4,8 @@ from .models import Movie
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    genres = serializers.SerializerMethodField()
+    # genres = serializers.ReadOnlyField(source='genre.name')
 
     class Meta:
         model = Movie
         fields = '__all__'
-    
-    def get_genres(self, obj):
-        return 

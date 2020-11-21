@@ -10,6 +10,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .serializers import ArticleSerializer, CommentSerializer
 from .models import Article, Comment
+from movies.models import Movie
 
 
 @api_view(['GET', 'POST'])
@@ -20,10 +21,10 @@ def article_list_create(request):
         serializer = ArticleSerializer(request.user.articles, many=True)
         return Response(serializer.data)
     else:
-        serializer = ArticleSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        movie = Movie.objects.get(pk=request.data['movie_pk'])
+        article = Article.objects.create(movie=movie, content=request.data['content'], user=request.user)
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['PUT', 'DELETE', 'GET'])
@@ -34,6 +35,7 @@ def article_update_delete_detail(request, article_pk):
     if request.method == 'PUT':
         serializer = ArticleSerializer(article, data=request.data)
         if serializer.is_valid(raise_exception=True):
+            serializer.save(movie=movie)
             serializer.save(user=request.user)
             return Response(serializer.data)
     elif request.method == 'DELETE':
