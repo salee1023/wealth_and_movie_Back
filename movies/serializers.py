@@ -5,10 +5,10 @@ from .models import Movie, Genre
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ['name',]
 
 class MovieSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True)
+    genres = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Movie
