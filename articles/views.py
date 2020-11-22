@@ -22,7 +22,7 @@ def article_list_create(request):
         return Response(serializer.data)
     else:
         movie = Movie.objects.get(pk=request.data['movie_pk'])
-        article = Article.objects.create(movie=movie, content=request.data['content'], user=request.user)
+        article = Article.objects.create(user=request.user, movie=movie, content=request.data['content'], rank=request.data['rating'])
         serializer = ArticleSerializer(article)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
