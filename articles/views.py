@@ -18,7 +18,8 @@ from movies.models import Movie
 @permission_classes([IsAuthenticated])
 def article_list_create(request):
     if request.method == 'GET':
-        serializer = ArticleSerializer(request.user.articles, many=True)
+        articles = Article.objects.order_by('-pk')
+        serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     else:
         movie = Movie.objects.get(pk=request.data['movie_pk'])

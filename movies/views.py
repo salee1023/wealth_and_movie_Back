@@ -18,8 +18,6 @@ from .models import Movie, Genre
 def movie_list_create(request):
     if request.method == 'GET':
         movies = Movie.objects.all()
-        genres = Genre.objects.all()
-        
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
     else:
