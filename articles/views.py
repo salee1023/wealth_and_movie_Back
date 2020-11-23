@@ -34,11 +34,11 @@ def article_list_create(request):
 def article_update_delete_detail(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     if request.method == 'PUT':
-        serializer = ArticleSerializer(article, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(movie=movie)
-            serializer.save(user=request.user)
-            return Response(serializer.data)
+        article.content = request.data['content']
+        article.rank = request.data['rating'] 
+        article.save()
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
         article.delete()
         return Response({ 'id': article_pk })

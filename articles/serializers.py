@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from movies.serializers import MovieSerializer
 from .models import Article, Comment
 
 class ArticleSerializer(serializers.ModelSerializer):
