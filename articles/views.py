@@ -14,15 +14,15 @@ from movies.models import Movie
 
 
 @api_view(['GET', 'POST'])
-# @authentication_classes([JSONWebTokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 def article_list_create(request):
     if request.method == 'GET':
         articles = Article.objects.order_by('-pk')
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     else:
-        movie = Movie.objects.get(pk=request.data['movie_pk'])
+        movie = Movie.objects.get(pk=request.data['movie_pk'])  
         article = Article.objects.create(user=request.user, movie=movie, content=request.data['content'], rank=request.data['rating'])
         serializer = ArticleSerializer(article)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -77,7 +77,6 @@ def comment_update_delete(request, article_pk, comment_pk):
 @permission_classes([IsAuthenticated])
 def like_create(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
-    print(request.user.pk)
     if article.like_users.filter(pk=request.user.pk).exists():
     # if article.like_users.filter(user_id=request.user.id).exists():
         article.like_users.remove(request.user)
