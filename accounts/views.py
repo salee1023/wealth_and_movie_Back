@@ -31,12 +31,13 @@ def signup(request):
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_detail_follow(request, username):
-    person = get_object_or_404(get_user_model(), username=username)
+    User = get_user_model()
+    person = get_object_or_404(User, username=username)
     if request.method == 'GET':
         serializer = ProfileSerializer(person)
         return Response(serializer.data)
     else:
-        user = get_object_or_404(get_user_model(), username=request.data['headers']['username'])
+        user = get_object_or_404(User, username=request.data['username'])
         if user != person:
             if person.followers.filter(pk=user.pk).exists():
                 person.followers.remove(user)
@@ -44,6 +45,6 @@ def user_detail_follow(request, username):
             else:
                 person.followers.add(user)
                 follow = True
-            return Response({ 'follow': follow, 'follow_cnt': person.followers.count() })
+            return Response({ 'follow': follow })
         else:
             return Response({ 'error': '팔로우 할 수 없습니다.' }, status=status.HTTP_403_FORBIDDEN)
