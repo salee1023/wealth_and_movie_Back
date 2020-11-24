@@ -14,8 +14,8 @@ from movies.models import Movie
 
 
 @api_view(['GET', 'POST'])
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JSONWebTokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def article_list_create(request):
     if request.method == 'GET':
         articles = Article.objects.order_by('-pk')
