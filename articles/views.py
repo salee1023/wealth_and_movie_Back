@@ -14,8 +14,8 @@ from movies.models import Movie
 
 
 @api_view(['GET', 'POST'])
-@authentication_classes([JSONWebTokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JSONWebTokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def article_list_create(request):
     if request.method == 'GET':
         articles = Article.objects.order_by('-pk')
@@ -34,11 +34,11 @@ def article_list_create(request):
 def article_update_delete_detail(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     if request.method == 'PUT':
-        serializer = ArticleSerializer(article, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(movie=movie)
-            serializer.save(user=request.user)
-            return Response(serializer.data)
+        article.content = request.data['content']
+        article.rank = request.data['rating'] 
+        article.save()
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
         article.delete()
         return Response({ 'id': article_pk })
@@ -52,10 +52,9 @@ def article_update_delete_detail(request, article_pk):
 @permission_classes([IsAuthenticated])
 def comment_create(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
-    serializer = CommentSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save(user=request.user, article=article)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    comment = Comment.objects.create(user=request.user, article=article, content=request.data['content'])
+    serializer = CommentSerializer(comment)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['PUT', 'DELETE'])
@@ -78,7 +77,9 @@ def comment_update_delete(request, article_pk, comment_pk):
 @permission_classes([IsAuthenticated])
 def like_create(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
-    if article.like_users.filter(user_id=request.user.id).exists():
+    print(request.user.pk)
+    if article.like_users.filter(pk=request.user.pk).exists():
+    # if article.like_users.filter(user_id=request.user.id).exists():
         article.like_users.remove(request.user)
         like = False
     else:
