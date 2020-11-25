@@ -12,7 +12,7 @@ from .serializers import ArticleSerializer, CommentSerializer
 from .models import Article, Comment
 from movies.models import Movie
 
-
+# article READ, CREATE
 @api_view(['GET', 'POST'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
