@@ -8,4 +8,5 @@ urlpatterns = [
     path('signup/', views.signup),
     path('api-token-auth/', obtain_jwt_token),
     path('<username>/', views.user_detail_follow),
+    # path('<username>/img/', views.user_detail_follow),
 ]

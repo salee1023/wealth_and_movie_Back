@@ -27,13 +27,18 @@ def signup(request):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PATCH'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_detail_follow(request, username):
     User = get_user_model()
     person = get_object_or_404(User, username=username)
     if request.method == 'GET':
+        serializer = ProfileSerializer(person)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        person.profile = request.data['profile']
+        person.save()
         serializer = ProfileSerializer(person)
         return Response(serializer.data)
     else:
