@@ -17,7 +17,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     articles = ArticleSerializer(many=True)
-    followings = UserSerializer(many=True)
+    followings = serializers.StringRelatedField(many=True, read_only=True)
+    # followings = UserSerializer(many=True)
     
     class Meta:
         model = User
