@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'movies',
 
     'rest_framework',
+    'django_seed',
 
     'corsheaders',
 
