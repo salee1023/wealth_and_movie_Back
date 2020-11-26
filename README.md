@@ -8,7 +8,6 @@
 - djangorestframework
 - djangorestframework-jwt
 - django-cors-headers
-
 - django-seed
 
 ### Account
@@ -64,3 +63,7 @@
   - Restful한 설계를 위해 마찬가지로 동일 주소에 메서드를 명시했습니다.
   - 리뷰와 댓글 작성 시 JWT를 통한 인증이 필요합니다.
   - 좋아요 기능은 응답 시 현재 상태를 함께 응답하여 상태 표시를 용이하도록 도와줍니다.
+
+### ERD
+
+​	![ERD](README.assets/ERD.PNG)
